@@ -7,6 +7,9 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"strings"
+
+	"github.com/google/uuid"
 )
 
 const (
@@ -14,7 +17,7 @@ const (
 	BaseUrl                 = "https://share2.dexcom.com/ShareWebServices/Services"
 	AuthEndpoint            = "/General/AuthenticatePublisherAccount"
 	LoginEndpoint           = "/General/LoginPublisherAccountById"
-	GlucoseReadingsEndpoint = "Publisher/ReadPublisherLatestGlucoseValues"
+	GlucoseReadingsEndpoint = "/Publisher/ReadPublisherLatestGlucoseValues"
 )
 
 type Client struct {
@@ -76,7 +79,12 @@ func (c *Client) RetrieveAccountId() error {
 	if err != nil {
 		return err
 	}
-	c.AccountId = string(responseBody)
+	c.AccountId = strings.Trim(string(responseBody), "\"")
+
+	err = uuid.Validate(c.AccountId)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -109,7 +117,11 @@ func (c *Client) RetrieveSessionId() error {
 	if err != nil {
 		return err
 	}
-	c.SessionId = string(responseBody)
+	c.SessionId = strings.Trim(string(responseBody), "\"")
+	err = uuid.Validate(c.SessionId)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

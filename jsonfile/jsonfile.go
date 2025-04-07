@@ -7,6 +7,7 @@ package jsonfile
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -62,7 +63,8 @@ func Load[Data any](path string) (*JSONFile[Data], error) {
 
 func LoadOrNew[Data any](path string) (*JSONFile[Data], error) {
 	db, err := Load[Data](path)
-	if os.IsNotExist(err) {
+
+	if errors.Is(err, os.ErrNotExist) {
 		db, err = New[Data](path)
 	}
 	return db, err

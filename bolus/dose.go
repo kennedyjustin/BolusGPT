@@ -1,6 +1,7 @@
 package bolus
 
 import (
+	"log"
 	"time"
 )
 
@@ -121,6 +122,7 @@ type Dose struct {
 
 func GetDose(input DoseInput) Dose {
 	dose := Dose{}
+	log.Printf("%+v", input)
 
 	// Calculate Food Factor
 	grams := input.FoodInput.TotalGramsOfCarbs
@@ -129,12 +131,12 @@ func GetDose(input DoseInput) Dose {
 	if grams < input.FoodInput.CarbThresholdToCountProteinUnder {
 		grams += input.FoodInput.GramsOfProtein * input.FoodInput.ProteinMultiplier
 	}
-	dose.Breakdown.FoodFactor = grams * input.FoodInput.InsulinToCarbRatio.GetAtTime(time.Now())
+	dose.Breakdown.FoodFactor = grams / input.FoodInput.InsulinToCarbRatio.GetAtTime(time.Now())
 
 	// Calculate Correction Factor
 	bloodSugarIn15Mins := input.CorrectionInput.CurrentBloodGlucoseLevelInMgDl + input.CorrectionInput.BloodGlucoseTrendInMgDlIn15Mins
 	correction := bloodSugarIn15Mins - input.CorrectionInput.TargetBloodGlucoseLevelInMgDl
-	dose.Breakdown.CorrectionFactor = correction * input.CorrectionInput.InsulinSensitivityFactor.GetAtTime(time.Now())
+	dose.Breakdown.CorrectionFactor = correction / input.CorrectionInput.InsulinSensitivityFactor.GetAtTime(time.Now())
 
 	// Calculate Insulin On Board
 	incrementSinceLastBolus := int(time.Since(input.InsulinOnBoardInput.LastBolusTime).Minutes() / 30)
@@ -143,8 +145,12 @@ func GetDose(input DoseInput) Dose {
 	}
 
 	// Calculate Exercise Multiplier
-	exerciseIncrement := int(input.ExerciseInput.MinutesOfExercise / 30)
-	dose.Breakdown.ExerciseMultiplier = ExerciseMultiplierMap[exerciseIncrement][input.ExerciseInput.ExerciseIntensity]
+	if input.ExerciseInput.MinutesOfExercise > 0 {
+		exerciseIncrement := int(input.ExerciseInput.MinutesOfExercise / 30)
+		dose.Breakdown.ExerciseMultiplier = ExerciseMultiplierMap[exerciseIncrement][input.ExerciseInput.ExerciseIntensity]
+	} else {
+		dose.Breakdown.ExerciseMultiplier = 1
+	}
 
 	// Calculate Total. If negative, calculate the grams of carbs required to bring back to target.
 	dose.UnitsOfInsulin = (dose.Breakdown.FoodFactor + dose.Breakdown.CorrectionFactor + dose.Breakdown.InsulinOnBoardFactor) * dose.Breakdown.ExerciseMultiplier

@@ -10,19 +10,19 @@ import (
 )
 
 type CurrentBloodGlucoseReadingRequest struct {
-	SessionId string
-	Minutes   int
-	MaxCount  int
+	SessionId string `json:"sessionId"`
+	Minutes   int    `json:"minutes"`
+	MaxCount  int    `json:"maxCount"`
 }
 
 type CurrentBloodGlucoseReadingError struct {
-	Code    string
-	Message string
+	Code    string `json:"Code"`
+	Message string `json:"Message"`
 }
 
 type CurrentBloodGlucoseReading struct {
-	Value int
-	Trend string
+	Value int    `json:"Value"`
+	Trend string `json:"Trend"`
 }
 
 // https://www.dexcom.com/all-access/dexcom-cgm-explained/trend-arrow-and-treatment-decisions
@@ -52,6 +52,8 @@ func (c *Client) GetCurrentBloodGlucoseReading() (*CurrentBloodGlucoseReading, e
 			if err != nil {
 				return nil, err
 			}
+		} else {
+			return nil, err
 		}
 	}
 	return reading, nil

@@ -10,7 +10,7 @@ import (
 const Filepath = "me.json"
 
 func main() {
-	_, err := server.NewServer(server.ServerInput{
+	s, err := server.NewServer(server.ServerInput{
 		FilePath:       Filepath,
 		DexcomUsername: os.Getenv("DEXCOM_USERNAME"),
 		DexcomPassword: os.Getenv("DEXCOM_PASSWORD"),
@@ -18,4 +18,5 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+	s.Start()
 }

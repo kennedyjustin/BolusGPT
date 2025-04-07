@@ -10,19 +10,20 @@ import (
 )
 
 type DoseInput struct {
-	TotalGramsOfCarbs   float32
-	GramsOfFiber        float32
-	GramsOfSugarAlcohol float32
-	GramsOfProtein      float32
+	TotalGramsOfCarbs   float32 `json:"total_grams_of_carbs"`
+	GramsOfFiber        float32 `json:"grams_of_fiber"`
+	GramsOfSugarAlcohol float32 `json:"grams_of_sugar_alcohol"`
+	GramsOfProtein      float32 `json:"grams_of_protein"`
 
-	MinutesOfExercise float32
-	ExerciseIntensity bolus.ExerciseIntensity
+	MinutesOfExercise float32                 `json:"minutes_of_exercise"`
+	ExerciseIntensity bolus.ExerciseIntensity `json:"exercise_intensity"`
 }
 
 func (s *Server) DoseHandler(response http.ResponseWriter, request *http.Request) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
+	var dose bolus.Dose
 	s.db.Read(func(data *Me) {
 		if data == nil {
 			http.Error(response, "please onboard", http.StatusNotFound)
@@ -50,7 +51,7 @@ func (s *Server) DoseHandler(response http.ResponseWriter, request *http.Request
 			return
 		}
 
-		dose := bolus.GetDose(bolus.DoseInput{
+		dose = bolus.GetDose(bolus.DoseInput{
 			FoodInput: bolus.FoodInput{
 				TotalGramsOfCarbs:                input.TotalGramsOfCarbs,
 				GramsOfFiber:                     input.GramsOfFiber,
@@ -77,20 +78,38 @@ func (s *Server) DoseHandler(response http.ResponseWriter, request *http.Request
 				ExerciseIntensity: input.ExerciseIntensity,
 			},
 		})
-
-		err = s.db.Write(func(me *Me) error {
-			me.LastBolusUnitsOfInsulin = dose.UnitsOfInsulin
-			me.LastBolusTime = time.Now()
-			return nil
-		})
-		if err != nil {
-			log.Println(err)
-			http.Error(response, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		response.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(response).Encode(dose)
 	})
 
+	response.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(response).Encode(dose)
+}
+
+type ConfirmInput struct {
+	UnitsOfInsulin float32 `json:"units_of_insulin"`
+}
+
+func (s *Server) ConfirmHandler(response http.ResponseWriter, request *http.Request) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	decoder := json.NewDecoder(request.Body)
+	input := ConfirmInput{}
+	err := decoder.Decode(&input)
+	if err != nil {
+		log.Println(err)
+		http.Error(response, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	err = s.db.Write(func(me *Me) error {
+		me.LastBolusUnitsOfInsulin = input.UnitsOfInsulin
+		me.LastBolusTime = time.Now()
+
+		return nil
+	})
+	if err != nil {
+		log.Println(err)
+		http.Error(response, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }

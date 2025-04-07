@@ -42,14 +42,16 @@ func NewServer(input ServerInput) (*Server, error) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /me", server.MeHandlerGet)
 	mux.HandleFunc("PATCH /me", server.MeHandlerPatch)
-	mux.HandleFunc("POST /nutrition", server.NutritionHandler)
 	mux.HandleFunc("POST /dose", server.DoseHandler)
 	httpServer := &http.Server{
 		Handler: mux,
 		Addr:    ":8080",
 	}
-	go httpServer.ListenAndServe()
 	server.server = httpServer
 
 	return server, nil
+}
+
+func (s *Server) Start() {
+	s.server.ListenAndServe()
 }
