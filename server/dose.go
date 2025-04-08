@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"time"
 
 	"github.com/kennedyjustin/BolusGPT/bolus"
 )
@@ -82,34 +81,4 @@ func (s *Server) DoseHandler(response http.ResponseWriter, request *http.Request
 
 	response.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(response).Encode(dose)
-}
-
-type ConfirmInput struct {
-	UnitsOfInsulin float32 `json:"units_of_insulin"`
-}
-
-func (s *Server) ConfirmHandler(response http.ResponseWriter, request *http.Request) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
-	decoder := json.NewDecoder(request.Body)
-	input := ConfirmInput{}
-	err := decoder.Decode(&input)
-	if err != nil {
-		log.Println(err)
-		http.Error(response, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	err = s.db.Write(func(me *Me) error {
-		me.LastBolusUnitsOfInsulin = input.UnitsOfInsulin
-		me.LastBolusTime = time.Now()
-
-		return nil
-	})
-	if err != nil {
-		log.Println(err)
-		http.Error(response, err.Error(), http.StatusInternalServerError)
-		return
-	}
 }
