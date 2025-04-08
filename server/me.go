@@ -96,6 +96,9 @@ func (s *Server) MeHandlerPatch(response http.ResponseWriter, request *http.Requ
 			me.LastBolusUnitsOfInsulin = *input.LastBolusUnitsOfInsulin
 		}
 
+		response.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(response).Encode(me)
+
 		return nil
 	})
 	if err != nil {

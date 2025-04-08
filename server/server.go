@@ -2,6 +2,7 @@ package server
 
 import (
 	"net/http"
+	"strings"
 	"sync"
 
 	"github.com/kennedyjustin/BolusGPT/dexcom"
@@ -13,12 +14,14 @@ type Server struct {
 	server       *http.Server
 	db           *jsonfile.JSONFile[Me]
 	dexcomClient *dexcom.Client
+	bearerToken  string
 }
 
 type ServerInput struct {
 	FilePath       string
 	DexcomUsername string
 	DexcomPassword string
+	BearerToken    string
 }
 
 func NewServer(input ServerInput) (*Server, error) {
@@ -40,16 +43,31 @@ func NewServer(input ServerInput) (*Server, error) {
 	server.dexcomClient = dexcomClient
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("GET /me", server.MeHandlerGet)
-	mux.HandleFunc("PATCH /me", server.MeHandlerPatch)
-	mux.HandleFunc("POST /dose", server.DoseHandler)
+	mux.HandleFunc("GET /me", server.Auth(server.MeHandlerGet))
+	mux.HandleFunc("PATCH /me", server.Auth(server.MeHandlerPatch))
+	mux.HandleFunc("POST /dose", server.Auth(server.DoseHandler))
 	httpServer := &http.Server{
 		Handler: mux,
 		Addr:    ":8080",
 	}
 	server.server = httpServer
 
+	server.bearerToken = input.BearerToken
+
 	return server, nil
+}
+
+func (s *Server) Auth(handler http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		authHeader := r.Header.Get("Authorization")
+		headerSlice := strings.Split(authHeader, "Bearer ")
+		if authHeader == "" || len(headerSlice) != 2 || headerSlice[1] != s.bearerToken {
+			print(headerSlice[1], s.bearerToken)
+			http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+			return
+		}
+		handler(w, r)
+	}
 }
 
 func (s *Server) Start() {

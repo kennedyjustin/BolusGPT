@@ -1,0 +1,186 @@
+openapi: 3.1.0
+info:
+  title: BolusGPT API
+  description: API for insulin dosing and user metabolic settings.
+  version: 1.0.0
+servers:
+  - url: https://foobar.com
+    description: Production server
+paths:
+  /me:
+    get:
+      operationId: getMe
+      summary: Get user settings
+      description: Returns the currently stored user metabolic configuration.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Me'
+        '404':
+          description: User has not onboarded
+    patch:
+      operationId: updateMe
+      summary: Update user settings
+      description: Updates user settings such as multipliers, sensitivity, and recent insulin usage. Returns the updated config.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MeInput'
+      responses:
+        '200':
+          description: Updated user configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Me'
+        '500':
+          description: Server error
+  /dose:
+    post:
+      operationId: getDose
+      summary: Calculate insulin dose
+      description: Calculates insulin dose based on input data and current user settings.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DoseInput'
+      responses:
+        '200':
+          description: Calculated dose
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dose'
+        '404':
+          description: Missing required configuration
+        '500':
+          description: Server error
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    Me:
+      type: object
+      properties:
+        fiber_multiplier:
+          type: number
+          description: Adjustment factor for dietary fiber's effect on insulin needs.
+        sugar_alcohol_multiplier:
+          type: number
+          description: Adjustment factor for sugar alcohols' impact on blood sugar.
+        protein_multiplier:
+          type: number
+          description: Factor representing how protein contributes to insulin demand.
+        carb_threshold_to_count_protein_under:
+          type: number
+          description: Carb threshold under which protein is counted for dosing.
+        insulin_to_carb_ratio:
+          type: number
+          description: Grams of carbs covered by one unit of insulin.
+        target_blood_glucose_level_in_mg_dl:
+          type: number
+          description: Target blood glucose level in mg/dL.
+        insulin_sensitivity_factor:
+          type: number
+          description: Blood glucose drop expected per unit of insulin.
+        last_bolus_time:
+          type: string
+          format: date-time
+          description: Time of the last insulin bolus.
+        last_bolus_units_of_insulin:
+          type: number
+          description: Amount of insulin used in the last bolus.
+    MeInput:
+      type: object
+      properties:
+        fiber_multiplier:
+          type: number
+          description: Adjustment factor for dietary fiber's effect on insulin needs.
+        sugar_alcohol_multiplier:
+          type: number
+          description: Adjustment factor for sugar alcohols' impact on blood sugar.
+        protein_multiplier:
+          type: number
+          description: Factor representing how protein contributes to insulin demand.
+        carb_threshold_to_count_protein_under:
+          type: number
+          description: Carb threshold under which protein is counted for dosing.
+        insulin_to_carb_ratio:
+          type: number
+          description: Grams of carbs covered by one unit of insulin.
+        target_blood_glucose_level_in_mg_dl:
+          type: number
+          description: Target blood glucose level in mg/dL.
+        insulin_sensitivity_factor:
+          type: number
+          description: Blood glucose drop expected per unit of insulin.
+        last_bolus_time:
+          type: string
+          format: date-time
+          description: Time of the last insulin bolus.
+        last_bolus_units_of_insulin:
+          type: number
+          description: Amount of insulin used in the last bolus.
+    DoseInput:
+      type: object
+      properties:
+        total_grams_of_carbs:
+          type: number
+          description: Total carbohydrates consumed.
+        grams_of_fiber:
+          type: number
+          description: Grams of dietary fiber in the meal.
+        grams_of_sugar_alcohol:
+          type: number
+          description: Grams of sugar alcohols in the meal.
+        grams_of_protein:
+          type: number
+          description: Grams of protein in the meal.
+        minutes_of_exercise:
+          type: number
+          description: Duration of recent exercise in minutes.
+        exercise_intensity:
+          type: string
+          description: Intensity of recent exercise.
+          enum: [none, low, moderate, high]
+    Dose:
+      type: object
+      description: Output from the dose calculation.
+      properties:
+        units_of_insulin:
+          type: number
+          description: Units of Insulin for the Bolus dose.
+        grams_of_carbs:
+          type: number
+          description: If negative, carbs to consume to return to target blood glucose.
+        breakdown:
+          type: object
+          description: A breakdown of factors contributing to the total dose.
+          properties:
+            food_factor:
+              type: number
+              description: Portion of dose due to food intake.
+            correction_factor:
+              type: number
+              description: Portion of dose for correcting high blood glucose.
+            insulin_on_board_factor:
+              type: number
+              description: Portion of dose adjusted for insulin still active in the body.
+            exercise_multiplier:
+              type: number
+              description: Portion of dose adjusted due to recent exercise.
