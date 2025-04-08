@@ -1,7 +1,6 @@
 package bolus
 
 import (
-	"log"
 	"time"
 )
 
@@ -122,7 +121,11 @@ type Dose struct {
 
 func GetDose(input DoseInput) Dose {
 	dose := Dose{}
-	log.Printf("%+v", input)
+
+	// Validate Required Params
+	if input.FoodInput.InsulinToCarbRatio == nil || input.CorrectionInput.TargetBloodGlucoseLevelInMgDl <= 55 || input.CorrectionInput.CurrentBloodGlucoseLevelInMgDl <= 0 || input.CorrectionInput.InsulinSensitivityFactor == nil {
+		panic("valid inputs required for 'insulin_to_carb_ratio', 'target_blood_glucose_level_in_mg_dl', 'current_blood_glucose_level_in_mg_dl', and 'insulin_sensitivity_factor'")
+	}
 
 	// Calculate Food Factor
 	grams := input.FoodInput.TotalGramsOfCarbs
@@ -131,12 +134,18 @@ func GetDose(input DoseInput) Dose {
 	if grams < input.FoodInput.CarbThresholdToCountProteinUnder {
 		grams += input.FoodInput.GramsOfProtein * input.FoodInput.ProteinMultiplier
 	}
-	dose.Breakdown.FoodFactor = grams / input.FoodInput.InsulinToCarbRatio.GetAtTime(time.Now())
+	insulinToCarbRatio := input.FoodInput.InsulinToCarbRatio.GetAtTime(time.Now())
+	if insulinToCarbRatio > 0 {
+		dose.Breakdown.FoodFactor = grams / input.FoodInput.InsulinToCarbRatio.GetAtTime(time.Now())
+	}
 
 	// Calculate Correction Factor
 	bloodSugarIn15Mins := input.CorrectionInput.CurrentBloodGlucoseLevelInMgDl + input.CorrectionInput.BloodGlucoseTrendInMgDlIn15Mins
 	correction := bloodSugarIn15Mins - input.CorrectionInput.TargetBloodGlucoseLevelInMgDl
-	dose.Breakdown.CorrectionFactor = correction / input.CorrectionInput.InsulinSensitivityFactor.GetAtTime(time.Now())
+	insulinSensitivityFactor := input.CorrectionInput.InsulinSensitivityFactor.GetAtTime(time.Now())
+	if insulinSensitivityFactor > 0 {
+		dose.Breakdown.CorrectionFactor = correction / input.CorrectionInput.InsulinSensitivityFactor.GetAtTime(time.Now())
+	}
 
 	// Calculate Insulin On Board
 	incrementSinceLastBolus := int(time.Since(input.InsulinOnBoardInput.LastBolusTime).Minutes() / 30)
@@ -147,15 +156,18 @@ func GetDose(input DoseInput) Dose {
 	// Calculate Exercise Multiplier
 	if input.ExerciseInput.MinutesOfExercise > 0 {
 		exerciseIncrement := int(input.ExerciseInput.MinutesOfExercise / 30)
-		dose.Breakdown.ExerciseMultiplier = ExerciseMultiplierMap[exerciseIncrement][input.ExerciseInput.ExerciseIntensity]
-	} else {
+		if exerciseIncrement < len(ExerciseMultiplierMap) {
+			dose.Breakdown.ExerciseMultiplier = ExerciseMultiplierMap[exerciseIncrement][input.ExerciseInput.ExerciseIntensity]
+		}
+	}
+	if dose.Breakdown.ExerciseMultiplier == 0 {
 		dose.Breakdown.ExerciseMultiplier = 1
 	}
 
 	// Calculate Total. If negative, calculate the grams of carbs required to bring back to target.
 	dose.UnitsOfInsulin = (dose.Breakdown.FoodFactor + dose.Breakdown.CorrectionFactor + dose.Breakdown.InsulinOnBoardFactor) * dose.Breakdown.ExerciseMultiplier
-	if dose.UnitsOfInsulin < 0 {
-		dose.GramsOfCarbs = -dose.UnitsOfInsulin * input.FoodInput.InsulinToCarbRatio.GetAtTime(time.Now())
+	if dose.UnitsOfInsulin < 0 && insulinToCarbRatio > 0 {
+		dose.GramsOfCarbs = -dose.UnitsOfInsulin * insulinToCarbRatio
 	}
 
 	return dose
