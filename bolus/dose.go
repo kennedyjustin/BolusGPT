@@ -67,12 +67,13 @@ func (s SimpleTimeSensitiveFactor) GetAtTime(time.Time) float32 {
 	return float32(s)
 }
 
-type ExerciseIntensity int
+type ExerciseIntensity string
 
 const (
-	Low ExerciseIntensity = iota
-	Medium
-	High
+	None   ExerciseIntensity = "none"
+	Low    ExerciseIntensity = "low"
+	Medium ExerciseIntensity = "medium"
+	High   ExerciseIntensity = "high"
 )
 
 var InsulinOnBoardMultiplierList = []float32{
@@ -154,7 +155,7 @@ func GetDose(input DoseInput) Dose {
 	}
 
 	// Calculate Exercise Multiplier
-	if input.ExerciseInput.MinutesOfExercise > 0 {
+	if input.ExerciseInput.MinutesOfExercise > 0 && input.ExerciseInput.ExerciseIntensity != None {
 		exerciseIncrement := int(input.ExerciseInput.MinutesOfExercise / 30)
 		if exerciseIncrement < len(ExerciseMultiplierMap) {
 			dose.Breakdown.ExerciseMultiplier = ExerciseMultiplierMap[exerciseIncrement][input.ExerciseInput.ExerciseIntensity]

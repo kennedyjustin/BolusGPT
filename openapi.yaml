@@ -21,6 +21,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Me'
+              examples:
+                currentConfig:
+                  summary: Example user metabolic configuration
+                  value:
+                    fiber_multiplier: 0.5
+                    sugar_alcohol_multiplier: 0.5
+                    protein_multiplier: 0.1
+                    carb_threshold_to_count_protein_under: 25
+                    insulin_to_carb_ratio: 10
+                    target_blood_glucose_level_in_mg_dl: 100
+                    insulin_sensitivity_factor: 40
+                    last_bolus_time: "2025-04-07T12:00:00Z"
+                    last_bolus_units_of_insulin: 4.0
         '404':
           description: User has not onboarded
     patch:
@@ -35,6 +48,30 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/MeInput'
+            examples:
+              onboardUser:
+                summary: Onboard a new user with full metabolic config
+                value:
+                  fiber_multiplier: 0.5
+                  sugar_alcohol_multiplier: 0.25
+                  protein_multiplier: 0.1
+                  carb_threshold_to_count_protein_under: 20
+                  insulin_to_carb_ratio: 12
+                  insulin_sensitivity_factor: 45
+                  target_blood_glucose_level_in_mg_dl: 110
+              updateCarbRatio:
+                summary: Set insulin-to-carb ratio to 5
+                value:
+                  insulin_to_carb_ratio: 5
+              setFiberMultiplier:
+                summary: Count 50% of fiber in carb calculation
+                value:
+                  fiber_multiplier: 0.5
+              confirmBolus:
+                summary: Log that 5 units were taken now
+                value:
+                  last_bolus_units_of_insulin: 5
+                  last_bolus_time: "2025-04-07T15:30:00Z"
       responses:
         '200':
           description: Updated user configuration
@@ -57,6 +94,23 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/DoseInput'
+            examples:
+              yogurtOnly:
+                summary: Bolus dose for a cup of yogurt
+                value:
+                  total_grams_of_carbs: 15
+                  grams_of_fiber: 0
+                  grams_of_sugar_alcohol: 0
+                  grams_of_protein: 5
+              yogurtWithRun:
+                summary: Bolus dose after a long, heavy run
+                value:
+                  total_grams_of_carbs: 15
+                  grams_of_fiber: 0
+                  grams_of_sugar_alcohol: 0
+                  grams_of_protein: 5
+                  minutes_of_exercise: 60
+                  exercise_intensity: high
       responses:
         '200':
           description: Calculated dose
@@ -157,7 +211,7 @@ components:
         exercise_intensity:
           type: string
           description: Intensity of recent exercise.
-          enum: [none, low, moderate, high]
+          enum: [none, low, medium, high]
     Dose:
       type: object
       description: Output from the dose calculation.

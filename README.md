@@ -1,8 +1,11 @@
 # BolusGPT
 
 TODO:
-- Get OpenAPI spec - document exact use cases (onboarding, dosing, confirm dosing, getting nutrition, etc.)
-- exercise use string enums to convert
+- Get OpenAPI spec
+  - Make sure every description is accurate
+  - Update with URL
+  - Errors, etc.
+- find hosting service
 - Document here in readme
 - GPT needs nutrition database file
 
