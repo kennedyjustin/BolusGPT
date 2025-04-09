@@ -1,2 +1,4 @@
+.env
 me.json
-dexcom.json
+server.crt
+server.key

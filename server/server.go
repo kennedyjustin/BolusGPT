@@ -1,6 +1,7 @@
 package server
 
 import (
+	"log"
 	"net/http"
 	"strings"
 	"sync"
@@ -10,11 +11,13 @@ import (
 )
 
 type Server struct {
-	mu           sync.Mutex
-	server       *http.Server
-	db           *jsonfile.JSONFile[Me]
-	dexcomClient *dexcom.Client
-	bearerToken  string
+	mu             sync.Mutex
+	server         *http.Server
+	db             *jsonfile.JSONFile[Me]
+	dexcomClient   *dexcom.Client
+	bearerToken    string
+	serverCertPath string
+	serverkeyPath  string
 }
 
 type ServerInput struct {
@@ -22,6 +25,8 @@ type ServerInput struct {
 	DexcomUsername string
 	DexcomPassword string
 	BearerToken    string
+	ServerCertPath string
+	ServerKeyPath  string
 }
 
 func NewServer(input ServerInput) (*Server, error) {
@@ -48,11 +53,13 @@ func NewServer(input ServerInput) (*Server, error) {
 	mux.HandleFunc("POST /dose", server.Auth(server.DoseHandler))
 	httpServer := &http.Server{
 		Handler: mux,
-		Addr:    ":8080",
+		Addr:    ":443",
 	}
 	server.server = httpServer
 
 	server.bearerToken = input.BearerToken
+	server.serverCertPath = input.ServerCertPath
+	server.serverkeyPath = input.ServerKeyPath
 
 	return server, nil
 }
@@ -71,5 +78,8 @@ func (s *Server) Auth(handler http.HandlerFunc) http.HandlerFunc {
 }
 
 func (s *Server) Start() {
-	s.server.ListenAndServe()
+	err := s.server.ListenAndServeTLS(s.serverCertPath, s.serverkeyPath)
+	if err != nil {
+		log.Fatalln(err)
+	}
 }

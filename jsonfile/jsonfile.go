@@ -90,7 +90,7 @@ func (p *JSONFile[Data]) Write(fn func(*Data) error) error {
 	if err := fn(data); err != nil {
 		return err
 	}
-	b, err := json.Marshal(data)
+	b, err := json.MarshalIndent(data, "", "  ")
 	if err != nil {
 		return fmt.Errorf("JSONFile.Write: %w", err)
 	}
