@@ -16,11 +16,11 @@ type FoodInput struct {
 	TotalGramsOfCarbs float32
 	// Grams of Fiber
 	GramsOfFiber float32
-	// 0 to subtract none of the Fiber, 1 to subtract all of the Fiber
+	// 0 to subtract all of the Fiber, 1 to subtract none of the Fiber
 	FiberMultiplier float32
 	// Grams of Sugar Alcohol
 	GramsOfSugarAlcohol float32
-	// 0 to subtract none of the Sugar Alcohol, 1 to subtract all of the Sugar Alcohol
+	// 0 to subtract all of the Sugar Alcohol, 1 to subtract none of the Sugar Alcohol
 	SugarAlcoholMultiplier float32
 	// Grams of Protein
 	GramsOfProtein float32
@@ -130,8 +130,8 @@ func GetDose(input DoseInput) Dose {
 
 	// Calculate Food Factor
 	grams := input.FoodInput.TotalGramsOfCarbs
-	grams -= input.FoodInput.GramsOfFiber * input.FoodInput.FiberMultiplier
-	grams -= input.FoodInput.GramsOfSugarAlcohol * input.FoodInput.SugarAlcoholMultiplier
+	grams -= input.FoodInput.GramsOfFiber * (1 - input.FoodInput.FiberMultiplier)
+	grams -= input.FoodInput.GramsOfSugarAlcohol * (1 - input.FoodInput.SugarAlcoholMultiplier)
 	if grams < input.FoodInput.CarbThresholdToCountProteinUnder {
 		grams += input.FoodInput.GramsOfProtein * input.FoodInput.ProteinMultiplier
 	}

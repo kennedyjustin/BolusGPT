@@ -4,7 +4,7 @@ info:
   description: API for insulin dosing and user metabolic settings.
   version: 1.0.0
 servers:
-  - url: https://foo.bar
+  - url: https://bolusgpt.com
     description: Production server
 paths:
   /me:

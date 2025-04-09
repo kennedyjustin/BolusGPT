@@ -1,7 +1,6 @@
 # BolusGPT
 
 TODO:
-- Get hosted
 - Get OpenAPI spec
   - Make sure every description is accurate
   - Update with URL
