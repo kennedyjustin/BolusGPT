@@ -49,7 +49,7 @@ func NewServer(input ServerInput) (*Server, error) {
 	mux.HandleFunc("POST /dose", server.Auth(server.DoseHandler))
 	httpServer := &http.Server{
 		Handler: mux,
-		Addr:    ":80",
+		Addr:    ":8080",
 	}
 	server.server = httpServer
 
