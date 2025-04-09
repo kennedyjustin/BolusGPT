@@ -11,13 +11,11 @@ import (
 )
 
 type Server struct {
-	mu             sync.Mutex
-	server         *http.Server
-	db             *jsonfile.JSONFile[Me]
-	dexcomClient   *dexcom.Client
-	bearerToken    string
-	serverCertPath string
-	serverkeyPath  string
+	mu           sync.Mutex
+	server       *http.Server
+	db           *jsonfile.JSONFile[Me]
+	dexcomClient *dexcom.Client
+	bearerToken  string
 }
 
 type ServerInput struct {
@@ -25,8 +23,6 @@ type ServerInput struct {
 	DexcomUsername string
 	DexcomPassword string
 	BearerToken    string
-	ServerCertPath string
-	ServerKeyPath  string
 }
 
 func NewServer(input ServerInput) (*Server, error) {
@@ -53,13 +49,11 @@ func NewServer(input ServerInput) (*Server, error) {
 	mux.HandleFunc("POST /dose", server.Auth(server.DoseHandler))
 	httpServer := &http.Server{
 		Handler: mux,
-		Addr:    ":443",
+		Addr:    ":80",
 	}
 	server.server = httpServer
 
 	server.bearerToken = input.BearerToken
-	server.serverCertPath = input.ServerCertPath
-	server.serverkeyPath = input.ServerKeyPath
 
 	return server, nil
 }
@@ -69,7 +63,6 @@ func (s *Server) Auth(handler http.HandlerFunc) http.HandlerFunc {
 		authHeader := r.Header.Get("Authorization")
 		headerSlice := strings.Split(authHeader, "Bearer ")
 		if authHeader == "" || len(headerSlice) != 2 || headerSlice[1] != s.bearerToken {
-			print(headerSlice[1], s.bearerToken)
 			http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 			return
 		}
@@ -78,7 +71,7 @@ func (s *Server) Auth(handler http.HandlerFunc) http.HandlerFunc {
 }
 
 func (s *Server) Start() {
-	err := s.server.ListenAndServeTLS(s.serverCertPath, s.serverkeyPath)
+	err := s.server.ListenAndServe()
 	if err != nil {
 		log.Fatalln(err)
 	}

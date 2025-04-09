@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"io"
+	"log"
 	"net/http"
 	"strings"
 
@@ -83,6 +84,7 @@ func (c *Client) RetrieveAccountId() error {
 
 	err = uuid.Validate(c.AccountId)
 	if err != nil {
+		log.Println(c.AccountId)
 		return err
 	}
 
@@ -120,6 +122,7 @@ func (c *Client) RetrieveSessionId() error {
 	c.SessionId = strings.Trim(string(responseBody), "\"")
 	err = uuid.Validate(c.SessionId)
 	if err != nil {
+		log.Println(c.SessionId)
 		return err
 	}
 
