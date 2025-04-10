@@ -15,7 +15,7 @@ Requirements:
 1. HTTPS->HTTP Reverse-Proxy available - OpenAI requires the OpenAPI spec to be hosted on a domain over HTTPS. Our server exposes an HTTP API.
 1. A domain name for (2).
 
-I personally chose to host on a [free-tier EC2 instance](https://aws.amazon.com/free/) behind an [reverse proxy](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/). I purchased my domain through [Namecheap](https://namecheap.com/).
+I personally chose to host on a [free-tier EC2 instance](https://aws.amazon.com/free/) behind an [nginx reverse proxy](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/). I purchased my domain through [Namecheap](https://namecheap.com/).
 
 ## Dependencies
 
