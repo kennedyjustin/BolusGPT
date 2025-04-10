@@ -2,13 +2,13 @@
 
 BolusGPT is an OpenAI Custom GPT that calculates [bolus]() insulin doses via natural language. Users can use text or voice for prompts like the following:
 
-| Bolus dose for an 8 oz steak, a cup of cooked broccoli, and a cup of brown rice.
+> Bolus dose for an 8 oz steak, a cup of cooked broccoli, and a cup of brown rice.
 
-| Change my insulin-carb-ratio to 1:6.
+> Change my insulin-carb-ratio to 1:6.
 
 The calculation is done on an HTTP server and the API is exposed to the Custom GPT via an "Action" (function calling). The server integrates with [Dexcom CGMs]() to get the user's real-time blood glucose level and trend, and also stores static settings like the user's insulin-to-carb ratio.
 
-Insulin dosing is under the purview of the FDA, so users are required to self-host the server. All of the resources required to build the Custom GPT, along with a setup guide is included in the repository.
+Insulin dosing is under the purview of the FDA, so users are required to self-host the server. All of the resources required to build the Custom GPT, along with a [setup guide](./SETUP.md) is included in the repository.
 
 ## Demo
 
@@ -18,9 +18,9 @@ TODO: Video
 
 ### Server
 1. Stores static settings required to calculate bolus doses. For example:
-  1. Target blood glucose level
-  1. Insulin-to-carb ratio
-  1. Insulin sensitivity factor
+   1. Target blood glucose level
+   1. Insulin-to-carb ratio
+   1. Insulin sensitivity factor
 1. Retrieves the user's real-time blood glucose level and trend via the Dexcom API.
 1. Calculates bolus insulin doses via well-tested algorithm.
 
@@ -38,17 +38,17 @@ A brief outline of how this works end-to-end:
 1. The user follows the [setup guide](./SETUP.md) and creates their own BolusGPT in their OpenAI account.
 1. On their preferred OpenAI app (iOS App, website, etc.), and using their preferred medium of interaction (text / voice), the user interacts with BolusGPT.
 1. First, they onboard.
-  1. BolusGPT asks for the user's insulin-to-carb ratio, target blood glucose level, etc.
-  1. BolusGPT calls the `PATCH /me` API with the information, where it is stored in a JSON file on the server.
+   1. BolusGPT asks for the user's insulin-to-carb ratio, target blood glucose level, etc.
+   1. BolusGPT calls the `PATCH /me` API with the information, where it is stored in a JSON file on the server.
 1. Next, they ask BolusGPT to dose their meal.
-  1. BolusGPT asks what the user will eat, whether the user will soon be exercising, etc.
-  1. BolusGPT references the nutritional information database file to collect grams of carbs, fiber, protein, etc.
-  1. BolusGPT calls the `POST /dose` API with the information.
-    1. On the server, the current blood glucose level and trend is received from the Dexcom API.
-    1. Using the nutrition info, exercise info, current blood glucose info, and stored user info, the insulin bolus is calculated and returned.
+   1. BolusGPT asks what the user will eat, whether the user will soon be exercising, etc.
+   1. BolusGPT references the nutritional information database file to collect grams of carbs, fiber, protein, etc.
+   1. BolusGPT calls the `POST /dose` API with the information.
+      1. On the server, the current blood glucose level and trend is received from the Dexcom API.
+      1. Using the nutrition info, exercise info, current blood glucose info, and stored user info, the insulin bolus is calculated and returned.
   1. BolusGPT presents the bolus dose to the user.
 1. Optionally, the user can confirm they will use this dose (or tell BolusGPT they will opt for a different dose).
-  1. If confirmed, BolusGPT can call `PATCH /me` with the dose used, and when. This can be an input to the next dose calculation (used to calculate insulin-on-board (IOB)).
+   1. If confirmed, BolusGPT can call `PATCH /me` with the dose used, and when. This can be an input to the next dose calculation (used to calculate insulin-on-board (IOB)).
 
 ### Documentation
 
