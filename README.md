@@ -27,7 +27,6 @@ TODO: Video
 ### Custom GPT Resources
 1. OpenAPI spec ([`openapi.yaml`](./openapi.yaml)) included so the CustomGPT knows how to interact with the APIs.
 1. Spec for the CustomGPT itself ([`SPEC.md`](./SPEC.md))
-1. Nutrition database file so the CustomGPT retrieves accurate nutrition information.
 
 ## How does it work?
 
@@ -42,7 +41,7 @@ A brief outline of how this works end-to-end:
    1. BolusGPT calls the `PATCH /me` API with the information, where it is stored in a JSON file on the server.
 1. Next, they ask BolusGPT to dose their meal.
    1. BolusGPT asks what the user will eat, whether the user will soon be exercising, etc.
-   1. BolusGPT references the nutritional information database file to collect grams of carbs, fiber, protein, etc.
+   1. BolusGPT searches the web for nutritional information to collect grams of carbs, fiber, protein, etc.
    1. BolusGPT calls the `POST /dose` API with the information.
       1. On the server, the current blood glucose level and trend is received from the Dexcom API.
       1. Using the nutrition info, exercise info, current blood glucose info, and stored user info, the insulin bolus is calculated and returned.
@@ -87,11 +86,13 @@ Please follow the [setup guide](./SETUP.md).
 1. Gary Scheiner's book, [Think Like a Pancreas](https://www.amazon.com/Think-Like-Pancreas-Practical-Insulin-Completely/dp/0738215147)
 1. Dr. Richard Bernstein's book, [Diabetes Solution](https://www.amazon.com/Dr-Bernsteins-Diabetes-Solution-Achieving/dp/0316182699)
 
+## Future Directions
+
+1. Use Open Food Facts Nutritional Data as a Knowledge Base: https://world.openfoodfacts.org/data
+   1. Currently the file sizes are too large, even when chunked up.
+
 ## Todo
 
-- GPT Spec
-- GPT needs nutrition database file
-- Test
 - Demo video
 - Productionize
   - Put API on `api` subdomain

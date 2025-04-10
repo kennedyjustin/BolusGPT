@@ -107,5 +107,13 @@ func (c *Client) getCurrentBloodGlucoseReading() (*CurrentBloodGlucoseReading, e
 		return nil, err
 	}
 
+	if len(glucoseResponse) == 0 && string(responseBody) == "[]" {
+		return nil, errors.New("cannot talk to Dexcom Share")
+	}
+
+	if len(glucoseResponse) != 1 {
+		return nil, errors.New(string(responseBody))
+	}
+
 	return glucoseResponse[0], nil
 }

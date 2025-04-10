@@ -88,9 +88,10 @@ In your own OpenAI account, create a new CustomGPT. Provide the following config
 - **Picture**: Whatever you want.
 - **Instructions**: Copy and paste from [`SPEC.md`](./SPEC.md).
 - **Conversation starters**:
-  - "Onboard"
-  - "Dose"
-- **Knowledge**: Upload nutritional information database.
+   - "Onboard"
+   - "Get Dose"
+   - "Get Settings"
+   - "Confirm Dose"
 - **Actions**: Copy [`openapi.yaml`](./openapi.yaml). Make sure to update with your own server domain.
 
 Finally, create the Custom GPT. I keep the Share settings to "Only me"
