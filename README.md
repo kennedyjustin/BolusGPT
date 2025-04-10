@@ -1,14 +1,14 @@
 # BolusGPT
 
-BolusGPT is an OpenAI Custom GPT that calculates [bolus]() insulin doses via natural language. Users can use text or voice for prompts like the following:
+BolusGPT is an OpenAI Custom GPT that calculates [bolus](https://en.wikipedia.org/wiki/Bolus_(medicine)) insulin doses via natural language. Users can use text or voice for prompts like the following:
 
 > Bolus dose for an 8 oz steak, a cup of cooked broccoli, and a cup of brown rice.
 
 > Change my insulin-carb-ratio to 1:6.
 
-The calculation is done on an HTTP server and the API is exposed to the Custom GPT via an "Action" (function calling). The server integrates with [Dexcom CGMs]() to get the user's real-time blood glucose level and trend, and also stores static settings like the user's insulin-to-carb ratio.
+The calculation is done on an HTTP server and the API is exposed to the Custom GPT via an "Action" (function calling). The server integrates with Dexcom CGMs (via a port of [pydexcom](https://github.com/gagebenne/pydexcom/)) to get the user's real-time blood glucose level and trend, and also stores static settings like the user's insulin-to-carb ratio.
 
-Insulin dosing is under the purview of the FDA, so users are required to self-host the server. All of the resources required to build the Custom GPT, along with a [setup guide](./SETUP.md) is included in the repository.
+**Important Note**: Insulin dosing is under the purview of the FDA, so users are required to self-host the server. All of the resources required to build the Custom GPT, along with a [setup guide](./SETUP.md) is included in the repository.
 
 ## Demo
 
@@ -81,6 +81,12 @@ Any of the following fields can be provided when asking for a dose calculation v
 
 Please follow the [setup guide](./SETUP.md).
 
+## Acknowledgements
+
+1. Gage Benne for reverse engineering the Dexcom Share API: https://github.com/gagebenne/pydexcom
+1. Gary Scheiner's book, [Think Like a Pancreas](https://www.amazon.com/Think-Like-Pancreas-Practical-Insulin-Completely/dp/0738215147)
+1. Dr. Richard Bernstein's book, [Diabetes Solution](https://www.amazon.com/Dr-Bernsteins-Diabetes-Solution-Achieving/dp/0316182699)
+
 ## Todo
 
 - GPT
@@ -88,8 +94,6 @@ Please follow the [setup guide](./SETUP.md).
     - Upload new spec
   - GPT needs nutrition database file
 - Productionize
-  - README docs
-    - Attribution
     - Setup instructions
     - Demo video
   - Put API on `api` subdomain
