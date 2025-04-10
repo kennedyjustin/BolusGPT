@@ -17,7 +17,7 @@ TODO: Video
 ## What is included?
 
 ### Server
-1. Stores static settings required to calculate bolus doses. For example:
+1. Stores static settings (in a simple JSON file) required to calculate bolus doses .For example:
    1. Target blood glucose level
    1. Insulin-to-carb ratio
    1. Insulin sensitivity factor
@@ -25,8 +25,8 @@ TODO: Video
 1. Calculates bolus insulin doses via well-tested algorithm.
 
 ### Custom GPT Resources
-1. OpenAPI spec ([openapi.yaml](./openapi.yaml)) included so the CustomGPT knows how to interact with the APIs.
-1. Spec for the CustomGPT itself ([SPEC.md](./SPEC.md))
+1. OpenAPI spec ([`openapi.yaml`](./openapi.yaml)) included so the CustomGPT knows how to interact with the APIs.
+1. Spec for the CustomGPT itself ([`SPEC.md`](./SPEC.md))
 1. Nutrition database file so the CustomGPT retrieves accurate nutrition information.
 
 ## How does it work?
@@ -89,11 +89,10 @@ Please follow the [setup guide](./SETUP.md).
 
 ## Todo
 
-- GPT
-  - Work on GPT Stuff
-    - Upload new spec
-  - GPT needs nutrition database file
+- GPT Spec
+- GPT needs nutrition database file
+- Test
+- Demo video
 - Productionize
-    - Setup instructions
-    - Demo video
   - Put API on `api` subdomain
+  - Direct `bolusgpt.com` to Github URL
