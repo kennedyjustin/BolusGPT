@@ -1,11 +1,11 @@
 openapi: 3.1.0
 info:
   title: BolusGPT API
-  description: API for insulin dosing and user metabolic settings.
+  description: API for insulin dosing and storing user metabolic settings.
   version: 1.0.0
 servers:
   - url: https://bolusgpt.com
-    description: Production server
+    description: Production Server
 paths:
   /me:
     get:
@@ -36,6 +36,8 @@ paths:
                     last_bolus_units_of_insulin: 4.0
         '404':
           description: User has not onboarded
+        '500':
+          description: Server error
     patch:
       operationId: updateMe
       summary: Update user settings
@@ -103,7 +105,7 @@ paths:
                   grams_of_sugar_alcohol: 0
                   grams_of_protein: 5
               yogurtWithRun:
-                summary: Bolus dose after a long, heavy run
+                summary: Bolus dose before a long, heavy run
                 value:
                   total_grams_of_carbs: 15
                   grams_of_fiber: 0
@@ -119,7 +121,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Dose'
         '404':
-          description: Missing required configuration
+          description: User has not onboarded
         '500':
           description: Server error
 components:
@@ -133,69 +135,69 @@ components:
       properties:
         fiber_multiplier:
           type: number
-          description: Adjustment factor for dietary fiber's effect on insulin needs.
+          description: Adjustment factor for dietary fiber's effect on insulin needs. A value of `1` counts all fiber. A value of `0` subtracts all fiber from total carbs
         sugar_alcohol_multiplier:
           type: number
-          description: Adjustment factor for sugar alcohols' impact on blood sugar.
+          description: Adjustment factor for sugar alcohols' impact on blood sugar. A value of `1` counts all sugar alcohol. A value of `0` subtracts all sugar alcohol from total carbs
         protein_multiplier:
           type: number
-          description: Factor representing how protein contributes to insulin demand.
+          description: Factor representing how protein contributes to insulin demand. A value of `1` counts all protein. A value of `0` counts none of the protein
         carb_threshold_to_count_protein_under:
           type: number
-          description: Carb threshold under which protein is counted for dosing.
+          description: Carb threshold under which protein is counted for dosing. For example, when the value is `20`, if the calculated carbs is under `20` protein is calculated according to the multiplier.
         insulin_to_carb_ratio:
           type: number
-          description: Grams of carbs covered by one unit of insulin.
+          description: Grams of carbs covered by one unit of insulin. A value of `5` specifies 1 unit of insulin to 5 grams of carbs (1:5)
         target_blood_glucose_level_in_mg_dl:
           type: number
           description: Target blood glucose level in mg/dL.
         insulin_sensitivity_factor:
           type: number
-          description: Blood glucose drop expected per unit of insulin.
+          description: Blood glucose drop expected per unit of insulin. A value of `20` means a drop of 20 mg/dL is expected for 1 unit of insulin.
         last_bolus_time:
           type: string
           format: date-time
           description: Time of the last insulin bolus.
         last_bolus_units_of_insulin:
           type: number
-          description: Amount of insulin used in the last bolus.
+          description: Units of insulin used in the last bolus.
     MeInput:
       type: object
       properties:
         fiber_multiplier:
           type: number
-          description: Adjustment factor for dietary fiber's effect on insulin needs.
+          description: Adjustment factor for dietary fiber's effect on insulin needs. A value of `1` counts all fiber. A value of `0` subtracts all fiber from total carbs
         sugar_alcohol_multiplier:
           type: number
-          description: Adjustment factor for sugar alcohols' impact on blood sugar.
+          description: Adjustment factor for sugar alcohols' impact on blood sugar. A value of `1` counts all sugar alcohol. A value of `0` subtracts all sugar alcohol from total carbs
         protein_multiplier:
           type: number
-          description: Factor representing how protein contributes to insulin demand.
+          description: Factor representing how protein contributes to insulin demand. A value of `1` counts all protein. A value of `0` counts none of the protein
         carb_threshold_to_count_protein_under:
           type: number
-          description: Carb threshold under which protein is counted for dosing.
+          description: Carb threshold under which protein is counted for dosing. For example, when the value is `20`, if the calculated carbs is under `20` protein is calculated according to the multiplier.
         insulin_to_carb_ratio:
           type: number
-          description: Grams of carbs covered by one unit of insulin.
+          description: Grams of carbs covered by one unit of insulin. A value of `5` specifies 1 unit of insulin to 5 grams of carbs (1:5)
         target_blood_glucose_level_in_mg_dl:
           type: number
           description: Target blood glucose level in mg/dL.
         insulin_sensitivity_factor:
           type: number
-          description: Blood glucose drop expected per unit of insulin.
+          description: Blood glucose drop expected per unit of insulin. A value of `20` means a drop of 20 mg/dL is expected for 1 unit of insulin.
         last_bolus_time:
           type: string
           format: date-time
           description: Time of the last insulin bolus.
         last_bolus_units_of_insulin:
           type: number
-          description: Amount of insulin used in the last bolus.
+          description: Units of insulin used in the last bolus.
     DoseInput:
       type: object
       properties:
         total_grams_of_carbs:
           type: number
-          description: Total carbohydrates consumed.
+          description: Total grams carbohydrates in the meal.
         grams_of_fiber:
           type: number
           description: Grams of dietary fiber in the meal.
@@ -207,10 +209,10 @@ components:
           description: Grams of protein in the meal.
         minutes_of_exercise:
           type: number
-          description: Duration of recent exercise in minutes.
+          description: Duration of exercise in minutes that will occur after the bolus.
         exercise_intensity:
           type: string
-          description: Intensity of recent exercise.
+          description: Intensity of exercise that will occur after the bolus.
           enum: [none, low, medium, high]
     Dose:
       type: object
@@ -221,7 +223,7 @@ components:
           description: Units of Insulin for the Bolus dose.
         grams_of_carbs:
           type: number
-          description: If negative, carbs to consume to return to target blood glucose.
+          description: If `units_of_insulin` is negative, the grams of carbohydrates to consume to return to target blood glucose.
         breakdown:
           type: object
           description: A breakdown of factors contributing to the total dose.
@@ -231,10 +233,10 @@ components:
               description: Portion of dose due to food intake.
             correction_factor:
               type: number
-              description: Portion of dose for correcting high blood glucose.
+              description: Portion of dose for correcting blood glucose.
             insulin_on_board_factor:
               type: number
               description: Portion of dose adjusted for insulin still active in the body.
             exercise_multiplier:
               type: number
-              description: Portion of dose adjusted due to recent exercise.
+              description: Portion of dose adjusted due to planned exercise.
