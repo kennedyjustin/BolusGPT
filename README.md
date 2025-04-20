@@ -95,7 +95,7 @@ I wanted to make this quickly, and GPTs come with a lot for free, for example:
 - Auth via OpenAI account
 - Text, voice, images for modality
 - Function calling with very little setup required
-- Totally free
+- Free (other than the hosted server / domain needed for the action)
 
 Someday I could see this turning into something more, but I am happy with where its at right now.
 
