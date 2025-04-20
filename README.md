@@ -32,7 +32,8 @@ TODO: Video
 
 ## How does it work?
 
-![](./bolusgpt.svg)
+![](./bolusgpt.svg#gh-dark-mode-only)
+![](./bolusgpt_light.svg#gh-light-mode-only)
 
 A brief outline of how this works end-to-end:
 
