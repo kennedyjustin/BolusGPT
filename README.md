@@ -18,7 +18,7 @@ https://github.com/user-attachments/assets/92f7e2d9-c1e1-4126-ac7b-65dee21eb272
 > [!CAUTION]
 > Results are still a little buggy.
 > - GPTs don't like calling actions after web searches without handing the turn back to the user. To combat this, first state your meal and ask for the dose after nutrition info has been returned.
-> - Also the GPT sometime ignores the instruction to never calculate a dose, and to solely rely on the API for that. Be vigilant that the result is coming from the actual API.
+> - Also, the GPT sometime ignores the instruction to never calculate a dose on its own without using the API. Be vigilant that the result is coming from the actual API.
 
 ## Why?
 
