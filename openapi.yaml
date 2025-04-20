@@ -32,7 +32,7 @@ paths:
                     insulin_to_carb_ratio: 10
                     target_blood_glucose_level_in_mg_dl: 100
                     insulin_sensitivity_factor: 40
-                    last_bolus_time: "2025-04-07T12:00:00Z"
+                    last_bolus_time: "2025-04-07T12:00:00-05:00"
                     last_bolus_units_of_insulin: 4.0
         '404':
           description: User has not onboarded
@@ -157,7 +157,7 @@ components:
         last_bolus_time:
           type: string
           format: date-time
-          description: Time of the last insulin bolus.
+          description: Time of the last insulin bolus. Uses RFC 3339.
         last_bolus_units_of_insulin:
           type: number
           description: Units of insulin used in the last bolus.

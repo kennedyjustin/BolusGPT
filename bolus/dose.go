@@ -1,6 +1,7 @@
 package bolus
 
 import (
+	"log"
 	"time"
 )
 
@@ -170,6 +171,8 @@ func GetDose(input DoseInput) Dose {
 	if dose.UnitsOfInsulin < 0 && insulinToCarbRatio > 0 {
 		dose.GramsOfCarbs = -dose.UnitsOfInsulin * insulinToCarbRatio
 	}
+
+	log.Printf("DOSE at %s, Input: %+v, Output: %+v", time.Now().String(), input, dose)
 
 	return dose
 }

@@ -8,7 +8,7 @@ BolusGPT is an OpenAI custom [GPT](https://openai.com/index/introducing-gpts/) t
 
 The calculation is done on an HTTP server and the API is exposed to the GPT via an "Action" (function calling). The server integrates with Dexcom CGMs (via a port of [pydexcom](https://github.com/gagebenne/pydexcom/)) to get the user's real-time blood glucose level and trend, and also stores static settings like the user's insulin-to-carb ratio.
 
-**Important Note**: Insulin dosing is under the purview of the FDA, so users are required to self-host the server. All of the resources required to build the GPT, along with a [setup guide](./SETUP.md) is included in the repository. BolusGPT is not an FDA approved system, and is not sold or publicly hosted anywhere.
+**IMPORTANT**: Insulin dosing is under the purview of the FDA, so users are required to self-host the server. All of the resources required to build the GPT, along with a [setup guide](./SETUP.md) is included in the repository. BolusGPT is not an FDA approved system, and is not sold or publicly hosted anywhere.
 
 That being said, I have personally been using BolusGPT to calculate doses on a regular basis.
 
