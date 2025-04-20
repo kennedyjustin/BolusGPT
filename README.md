@@ -27,7 +27,7 @@ I was diagnosed with Type 1 Diabetes, and found that manually counting carbs and
 ## What is included?
 
 ### Server
-1. Stores static settings (in a simple JSON file) required to calculate bolus doses .For example:
+1. Stores static settings (in a simple JSON file) required to calculate bolus doses. For example:
    1. Target blood glucose level
    1. Insulin-to-carb ratio
    1. Insulin sensitivity factor
