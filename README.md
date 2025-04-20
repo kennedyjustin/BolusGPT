@@ -12,8 +12,8 @@ The calculation is done on an HTTP server and the API is exposed to the GPT via 
 > Insulin dosing is under the purview of the FDA, so users are required to self-host the server. All of the resources required to build the GPT, along with a [setup guide](./SETUP.md) is included in the repository. BolusGPT is not an FDA approved system, and is not sold or publicly hosted anywhere.
 
 ## Demo
-
-![Demo](./assets/demo.mp4)
+   
+https://github.com/user-attachments/assets/92f7e2d9-c1e1-4126-ac7b-65dee21eb272
 
 > [!CAUTION]
 > Results are still a little buggy. Common issues are:
