@@ -1,10 +1,5 @@
 # BolusGPT
 
-> [!CAUTION]
-> Results are still a little buggy. Common issues are:
-> - The GPT often doesn't want to call the API directly after web searching for nutrition info. You can remind it by just typing "api".
-> - The GPT sometime ignores the instruction to never calculate a dose, and to solely rely on the API for that. Be vigilant that the result is coming from the actual API.
-
 BolusGPT is an OpenAI custom [GPT](https://openai.com/index/introducing-gpts/) that calculates [bolus](https://en.wikipedia.org/wiki/Bolus_(medicine)) insulin doses via natural language. Users can use text/voice/images for prompts like the following:
 
 > Bolus dose for an 8 oz steak, a cup of cooked broccoli, and a cup of brown rice.
@@ -19,6 +14,11 @@ The calculation is done on an HTTP server and the API is exposed to the GPT via 
 ## Demo
 
 TODO: Video
+
+> [!CAUTION]
+> Results are still a little buggy. Common issues are:
+> - The GPT often doesn't want to call the API directly after web searching for nutrition info. You can remind it by just typing "api".
+> - The GPT sometime ignores the instruction to never calculate a dose, and to solely rely on the API for that. Be vigilant that the result is coming from the actual API.
 
 ## Why?
 
