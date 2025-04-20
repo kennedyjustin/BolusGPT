@@ -13,7 +13,7 @@ The calculation is done on an HTTP server and the API is exposed to the GPT via 
 
 ## Demo
 
-![](./demo.mp4)
+![Demo](./assets/demo.mp4)
 
 > [!CAUTION]
 > Results are still a little buggy. Common issues are:
@@ -40,8 +40,8 @@ I was diagnosed with Type 1 Diabetes, and found that manually counting carbs and
 
 ## How does it work?
 
-![](./bolusgpt.svg#gh-dark-mode-only)
-![](./bolusgpt_light.svg#gh-light-mode-only)
+![](./assets/bolusgpt.svg#gh-dark-mode-only)
+![](./assets/bolusgpt_light.svg#gh-light-mode-only)
 
 A brief outline of how this works end-to-end:
 
