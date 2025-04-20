@@ -1,5 +1,10 @@
 # BolusGPT
 
+> [!CAUTION]
+> Results are still a little buggy. Common issues are:
+> - The GPT often doesn't want to call the API directly after web searching for nutrition info. You can remind it by just typing "api".
+> - The GPT sometime ignores the instruction to never calculate a dose, and to solely rely on the API for that. Be vigilant that the result is coming from the actual API.
+
 BolusGPT is an OpenAI custom [GPT](https://openai.com/index/introducing-gpts/) that calculates [bolus](https://en.wikipedia.org/wiki/Bolus_(medicine)) insulin doses via natural language. Users can use text/voice/images for prompts like the following:
 
 > Bolus dose for an 8 oz steak, a cup of cooked broccoli, and a cup of brown rice.
@@ -8,9 +13,8 @@ BolusGPT is an OpenAI custom [GPT](https://openai.com/index/introducing-gpts/) t
 
 The calculation is done on an HTTP server and the API is exposed to the GPT via an "Action" (function calling). The server integrates with Dexcom CGMs (via a port of [pydexcom](https://github.com/gagebenne/pydexcom/)) to get the user's real-time blood glucose level and trend, and also stores static settings like the user's insulin-to-carb ratio.
 
-**IMPORTANT**: Insulin dosing is under the purview of the FDA, so users are required to self-host the server. All of the resources required to build the GPT, along with a [setup guide](./SETUP.md) is included in the repository. BolusGPT is not an FDA approved system, and is not sold or publicly hosted anywhere.
-
-That being said, I have personally been using BolusGPT to calculate doses on a regular basis.
+> [!NOTE]
+> Insulin dosing is under the purview of the FDA, so users are required to self-host the server. All of the resources required to build the GPT, along with a [setup guide](./SETUP.md) is included in the repository. BolusGPT is not an FDA approved system, and is not sold or publicly hosted anywhere.
 
 ## Demo
 
