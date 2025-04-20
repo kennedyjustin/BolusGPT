@@ -16,6 +16,10 @@ That being said, I have personally been using BolusGPT to calculate doses on a r
 
 TODO: Video
 
+## Why?
+
+I was diagnosed with Type 1 Diabetes, and found that manually counting carbs and calculating insulin doses multiple times a day sucks. I built this to make my life a little easier, and figured I would open source it in case it helps someone else.
+
 ## What is included?
 
 ### Server
