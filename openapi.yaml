@@ -73,7 +73,7 @@ paths:
                 summary: Log that 5 units were taken now
                 value:
                   last_bolus_units_of_insulin: 5
-                  last_bolus_time: "2025-04-07T15:30:00Z"
+                  last_bolus_time: "now"
       responses:
         '200':
           description: Updated user configuration
@@ -156,8 +156,8 @@ components:
           description: Blood glucose drop expected per unit of insulin. A value of `20` means a drop of 20 mg/dL is expected for 1 unit of insulin.
         last_bolus_time:
           type: string
-          format: date-time
-          description: Time of the last insulin bolus. Uses RFC 3339.
+          format: string
+          description: Time of the last insulin bolus. Uses RFC 3339. Also accepts "now" to just use the current time.
         last_bolus_units_of_insulin:
           type: number
           description: Units of insulin used in the last bolus.

@@ -2,6 +2,7 @@ package server
 
 import (
 	"encoding/json"
+	"errors"
 	"log"
 	"net/http"
 	"time"
@@ -48,8 +49,8 @@ type MeInput struct {
 	TargetBloodGlucoseLevelInMgDl *float32                         `json:"target_blood_glucose_level_in_mg_dl"`
 	InsulinSensitivityFactor      *bolus.SimpleTimeSensitiveFactor `json:"insulin_sensitivity_factor"`
 
-	LastBolusTime           *time.Time `json:"last_bolus_time"`
-	LastBolusUnitsOfInsulin *float32   `json:"last_bolus_units_of_insulin"`
+	LastBolusTime           *string  `json:"last_bolus_time"`
+	LastBolusUnitsOfInsulin *float32 `json:"last_bolus_units_of_insulin"`
 }
 
 func (s *Server) MeHandlerPatch(response http.ResponseWriter, request *http.Request) {
@@ -90,7 +91,15 @@ func (s *Server) MeHandlerPatch(response http.ResponseWriter, request *http.Requ
 		}
 
 		if input.LastBolusTime != nil {
-			me.LastBolusTime = *input.LastBolusTime
+			if *input.LastBolusTime == "now" {
+				me.LastBolusTime = time.Now()
+			} else {
+				t, err := time.Parse(time.RFC3339, *input.LastBolusTime)
+				if err != nil {
+					return errors.New("could not parse last_bolus_time: " + err.Error())
+				}
+				me.LastBolusTime = t
+			}
 		}
 		if input.LastBolusUnitsOfInsulin != nil {
 			me.LastBolusUnitsOfInsulin = *input.LastBolusUnitsOfInsulin
@@ -103,7 +112,7 @@ func (s *Server) MeHandlerPatch(response http.ResponseWriter, request *http.Requ
 	})
 	if err != nil {
 		log.Println(err)
-		http.Error(response, err.Error(), http.StatusInternalServerError)
+		http.Error(response, err.Error(), http.StatusBadRequest)
 		return
 	}
 }
