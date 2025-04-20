@@ -40,4 +40,4 @@ Simply update `last_bolus_time` and `last_bolus_units_of_insulin`
 
 ### Retriving Settings
 
-List out the user's settings. For `last_bolus_time`, include the timestamp as well as the day.
+List out the user's settings. For `last_bolus_time`, include the timestamp as well as the day. Always include the EST timestamp.
