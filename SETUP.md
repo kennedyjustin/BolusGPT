@@ -64,7 +64,7 @@ uuidgen
 
 Run the API server (I do this in a `tmux` session):
 ```
-DEXCOM_USERNAME="<username>" DEXCOM_PASSWORD="<password>" BEARER_TOKEN="<token>" sudo -E go run .
+DEXCOM_USERNAME="<username>" DEXCOM_PASSWORD="<password>" BEARER_TOKEN="<token>" TZ="America/New_York" sudo -E go run .
 ```
 
 Try using the API. Here are a few examples:
