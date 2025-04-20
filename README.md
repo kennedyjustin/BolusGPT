@@ -2,7 +2,7 @@
 
 BolusGPT is an OpenAI custom [GPT](https://openai.com/index/introducing-gpts/) that calculates [bolus](https://en.wikipedia.org/wiki/Bolus_(medicine)) insulin doses via natural language. Users can use text/voice/images for prompts like the following:
 
-> Bolus dose for an 8 oz steak, a cup of cooked broccoli, and a cup of brown rice.
+> Bolus dose for 1/2 pint rebel vanilla ice cream
 
 > Change my insulin-to-carb ratio to 1:6.
 
