@@ -4,7 +4,7 @@ info:
   description: API for insulin dosing and storing user metabolic settings.
   version: 1.0.0
 servers:
-  - url: https://bolusgpt.com
+  - url: https://api.bolusgpt.com
     description: Production Server
 paths:
   /me:
@@ -113,6 +113,9 @@ paths:
                   grams_of_protein: 5
                   minutes_of_exercise: 60
                   exercise_intensity: high
+              correctiveDose:
+                summary: Corrective dose
+                value: null
       responses:
         '200':
           description: Calculated dose

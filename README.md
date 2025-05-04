@@ -22,7 +22,7 @@ https://github.com/user-attachments/assets/92f7e2d9-c1e1-4126-ac7b-65dee21eb272
 
 ## Why?
 
-I was diagnosed with Type 1 Diabetes, and found that manually counting carbs and calculating insulin doses multiple times a day sucks. I built this to make my life a little easier, and figured I would open source it in case it helps someone else.
+Recently diagnosed with Type 1 Diabetes, and found that manually counting carbs and calculating insulin doses multiple times a day sucks. I built this to make my life a little easier, and figured I would open source it in case it helps someone else.
 
 ## What is included?
 
